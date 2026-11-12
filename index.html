@@ -1,0 +1,2355 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PENMROYEK - Pengendalian dan Monitoring Proyek</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <!-- SheetJS (xlsx) CDN for Excel (.xlsx, .xls) and CSV parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ==============================================================================
+         1. TAMPILAN AWAL: PORTAL LOGIN & MASUK SEBAGAI PEKERJA (INITIAL LOGIN SCREEN)
+         ============================================================================== -->
+    <div id="appLoginView" class="login-portal-bg min-vh-100 py-4 py-lg-5 d-flex align-items-center justify-content-center">
+        <div class="container px-3 px-md-4" style="max-width: 980px;">
+            <!-- Brand / Header Section -->
+            <div class="text-center mb-4">
+                <div class="portal-brand-icon mx-auto mb-3">
+                    <i class="bi bi-buildings-fill text-white fs-2"></i>
+                </div>
+                <h2 class="fw-bolder text-white tracking-wide mb-1" style="letter-spacing: 0.5px;">PENMROYEK</h2>
+                <div class="text-info fw-semibold mb-2" style="font-size: 0.95rem; letter-spacing: 0.3px;">
+                    Pengendalian dan Monitoring Proyek
+                </div>
+                <p class="text-white-50 small mx-auto mb-3" style="max-width: 680px; font-size: 0.82rem; line-height: 1.5;">
+                    Platform terpadu pengendalian mutu konstruksi, progres Kurva S, analisis kebutuhan tenaga kerja standar SNI, inspeksi QC, mitigasi risiko ISO 31000, manajemen limbah hijau, dan logistik alat berat JIT.
+                </p>
+
+                <!-- Badges Standar Teknis -->
+                <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+                    <span class="badge bg-primary bg-opacity-25 text-info border border-info border-opacity-25 px-3 py-1 rounded-pill small">
+                        <i class="bi bi-shield-lock-fill me-1"></i> Multi-Role RBAC System
+                    </span>
+                    <span class="badge bg-success bg-opacity-25 text-success-emphasis border border-success border-opacity-25 px-3 py-1 rounded-pill small" style="color: #6ee7b7 !important;">
+                        <i class="bi bi-calculator me-1"></i> Standar SNI &amp; AHSP
+                    </span>
+                    <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25 px-3 py-1 rounded-pill small">
+                        <i class="bi bi-patch-check-fill me-1"></i> 7 Modul Terintegrasi
+                    </span>
+                </div>
+
+                <!-- Tombol Unduh Modul Panduan Langsung dari Layar Login -->
+                <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
+                    <span class="text-white-50 small me-1"><i class="bi bi-journal-text me-1 text-warning"></i>Modul Panduan:</span>
+                    <a href="MODUL_PANDUAN_PENGENDALIAN_PROYEK.pdf" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1" download style="font-size: 0.75rem;">
+                        <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i>Download PDF
+                    </a>
+                    <a href="MODUL_PANDUAN_PENGENDALIAN_PROYEK.docx" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1" download style="font-size: 0.75rem;">
+                        <i class="bi bi-file-earmark-word-fill text-primary me-1"></i>Download Word (.docx)
+                    </a>
+                    <a href="MODUL_PANDUAN_PENGENDALIAN_PROYEK.html" target="_blank" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1" style="font-size: 0.75rem;">
+                        <i class="bi bi-printer text-success me-1"></i>Buka Versi Web
+                    </a>
+                </div>
+            </div>
+
+            <!-- Login Card Container -->
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+                <!-- Navigation Tabs in Card Header -->
+                <div class="card-header p-2 bg-dark border-0" style="background-color: #0f172a !important;">
+                    <ul class="nav nav-pills nav-fill gap-2" id="portalAuthTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active py-2 px-3 fw-bold rounded-3 text-start d-flex align-items-center gap-2 portal-nav-tab" id="portal-tab-login-btn" data-bs-toggle="pill" data-bs-target="#portal-tab-login-pane" type="button" role="tab">
+                                <div class="rounded-circle bg-primary bg-opacity-25 text-primary p-2 d-flex align-items-center justify-content-center" style="width:34px; height:34px;">
+                                    <i class="bi bi-box-arrow-in-right fs-5"></i>
+                                </div>
+                                <div class="lh-sm">
+                                    <span class="d-block text-white" style="font-size: 0.85rem;">Masuk dengan Akun</span>
+                                    <small class="text-white-50 fw-normal" style="font-size: 0.7rem;">Email &amp; Password</small>
+                                </div>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link py-2 px-3 fw-bold rounded-3 text-start d-flex align-items-center gap-2 portal-nav-tab" id="portal-tab-worker-btn" data-bs-toggle="pill" data-bs-target="#portal-tab-worker-pane" type="button" role="tab">
+                                <div class="rounded-circle bg-success bg-opacity-25 text-success p-2 d-flex align-items-center justify-content-center" style="width:34px; height:34px;">
+                                    <i class="bi bi-people-fill fs-5"></i>
+                                </div>
+                                <div class="lh-sm">
+                                    <span class="d-block text-white" style="font-size: 0.85rem;">Masuk Sebagai Pekerja</span>
+                                    <small class="text-white-50 fw-normal" style="font-size: 0.7rem;">Pilih Peran Pekerja (1-Klik)</small>
+                                </div>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link py-2 px-3 fw-bold rounded-3 text-start d-flex align-items-center gap-2 portal-nav-tab" id="portal-tab-register-btn" data-bs-toggle="pill" data-bs-target="#portal-tab-register-pane" type="button" role="tab">
+                                <div class="rounded-circle bg-warning bg-opacity-25 text-warning p-2 d-flex align-items-center justify-content-center" style="width:34px; height:34px;">
+                                    <i class="bi bi-person-plus-fill fs-5"></i>
+                                </div>
+                                <div class="lh-sm">
+                                    <span class="d-block text-white" style="font-size: 0.85rem;">Daftar Pekerja Baru</span>
+                                    <small class="text-white-50 fw-normal" style="font-size: 0.7rem;">Registrasi Akun Baru</small>
+                                </div>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tab Body Content -->
+                <div class="card-body p-4 p-md-4">
+                    <div class="tab-content" id="portalAuthTabsContent">
+                        <!-- TAB 1: FORM LOGIN DENGAN EMAIL & PASSWORD -->
+                        <div class="tab-pane fade show active" id="portal-tab-login-pane" role="tabpanel">
+                            <div class="row align-items-center g-4">
+                                <div class="col-lg-7">
+                                    <div class="mb-3">
+                                        <h5 class="fw-bold text-dark mb-1">Masuk ke Akun Pekerja Anda</h5>
+                                        <p class="text-muted small mb-0">Silakan masukkan email dan password pekerja yang telah terdaftar di proyek.</p>
+                                    </div>
+
+                                    <form id="portalFormSignIn">
+                                        <div class="mb-3">
+                                            <label class="form-label small fw-bold text-secondary">Alamat Email Pekerja <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-primary"></i></span>
+                                                <input type="email" class="form-control border-start-0 ps-0" id="portalLoginEmail" placeholder="nama@proyek.com" required autocomplete="username">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <label class="form-label small fw-bold text-secondary mb-0">Password <span class="text-danger">*</span></label>
+                                                <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-muted" style="font-size: 0.75rem;" onclick="togglePasswordVisibility('portalLoginPassword', this)">
+                                                    <i class="bi bi-eye"></i> Lihat Password
+                                                </button>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-key text-primary"></i></span>
+                                                <input type="password" class="form-control border-start-0 ps-0" id="portalLoginPassword" placeholder="Masukkan password" required autocomplete="current-password">
+                                            </div>
+                                        </div>
+
+                                        <div class="alert alert-danger d-none py-2 px-3 small rounded-3" id="portalLoginAlert"></div>
+
+                                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm rounded-3" id="btnPortalSubmitLogin">
+                                            <i class="bi bi-box-arrow-in-right me-2"></i>Masuk ke Dashboard PENMROYEK
+                                        </button>
+                                    </form>
+
+                                    <!-- Quick Fill Buttons for Convenience -->
+                                    <div class="mt-3 pt-3 border-top">
+                                        <div class="small text-muted fw-semibold mb-2"><i class="bi bi-lightning-charge-fill text-warning me-1"></i>Pilih Cepat Akun Demo (Auto-Fill &amp; Masuk):</div>
+                                        <div class="d-flex flex-wrap gap-1">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 rounded-pill" style="font-size: 0.72rem;" onclick="quickFillAndLogin('admin@proyek.com', 'password123')">
+                                                👑 Project Manager
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 rounded-pill" style="font-size: 0.72rem;" onclick="quickFillAndLogin('material@proyek.com', 'password123')">
+                                                📦 Material
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 rounded-pill" style="font-size: 0.72rem;" onclick="quickFillAndLogin('planner@proyek.com', 'password123')">
+                                                📊 Site Engineer
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 rounded-pill" style="font-size: 0.72rem;" onclick="quickFillAndLogin('mandor@proyek.com', 'password123')">
+                                                👷 Mandor
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 rounded-pill" style="font-size: 0.72rem;" onclick="quickFillAndLogin('qc@proyek.com', 'password123')">
+                                                🔍 QC Inspector
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 rounded-pill" style="font-size: 0.72rem;" onclick="quickFillAndLogin('risk@proyek.com', 'password123')">
+                                                🛡️ HSE &amp; K3
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-5 border-start-lg">
+                                    <div class="bg-light p-3 rounded-4 border">
+                                        <h6 class="fw-bold text-dark mb-2"><i class="bi bi-info-circle-fill text-primary me-2"></i>Panduan Hak Akses Sistem</h6>
+                                        <ul class="list-unstyled small text-secondary mb-3" style="font-size: 0.78rem; line-height: 1.6;">
+                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-1"></i><strong>Hak Akses Berdasarkan Peran:</strong> Setiap pekerja hanya dapat mengedit fitur yang menjadi wewenangnya.</li>
+                                            <li class="mb-2"><i class="bi bi-eye-fill text-info me-1"></i><strong>Mode Hanya Lihat:</strong> Fitur modul yang bukan wewenang pekerja tetap dapat dipantau (read-only) untuk transparansi koordinasi.</li>
+                                            <li><i class="bi bi-shield-check text-warning me-1"></i><strong>Password Bawaan Demo:</strong> Semua akun bawaan menggunakan password <code>password123</code>.</li>
+                                        </ul>
+                                        <div class="p-2 bg-white rounded-3 border text-center">
+                                            <div class="small fw-semibold text-muted">Ingin langsung mencoba tanpa mengetik?</div>
+                                            <button type="button" class="btn btn-success btn-sm w-100 mt-2 fw-semibold" onclick="document.getElementById('portal-tab-worker-btn').click();">
+                                                <i class="bi bi-people-fill me-1"></i>Buka Menu "Masuk Sebagai Pekerja"
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: PILIH PEKERJA 1-KLIK (MASUK SEBAGAI PEKERJA) -->
+                        <div class="tab-pane fade" id="portal-tab-worker-pane" role="tabpanel">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h5 class="fw-bold text-dark mb-1">Pilih Profil Pekerja (1-Klik Masuk)</h5>
+                                    <p class="text-muted small mb-0">Klik salah satu kartu pekerja di bawah untuk langsung masuk dan menguji batasan hak akses RBAC:</p>
+                                </div>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill mt-2 mt-md-0">
+                                    <i class="bi bi-lightning-charge-fill me-1"></i>Instant Switch
+                                </span>
+                            </div>
+
+                            <div class="row g-2" id="portalQuickWorkersGrid">
+                                <!-- Populated dynamically by AuthManager -->
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: DAFTAR PEKERJA BARU -->
+                        <div class="tab-pane fade" id="portal-tab-register-pane" role="tabpanel">
+                            <div class="mb-3">
+                                <h5 class="fw-bold text-dark mb-1">Daftarkan Akun Pekerja Baru</h5>
+                                <p class="text-muted small mb-0">Tambahkan akun pekerja proyek dengan menentukan peran serta wewenang akses fiturnya.</p>
+                            </div>
+
+                            <form id="portalFormRegister">
+                                <div class="row g-3 mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Nama Lengkap Pekerja <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="portalRegNama" placeholder="Contoh: Ir. Dwi Kurniawan" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Alamat Email <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" id="portalRegEmail" placeholder="dwi@proyek.com" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Peran &amp; Wewenang Fitur <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="portalRegRole" required>
+                                        <option value="">-- Pilih Wewenang Akses --</option>
+                                        <option value="admin">👑 Project Manager / Admin (Akses Penuh Seluruh Modul)</option>
+                                        <option value="material">📦 Petugas Gudang &amp; Material (Edit Kontrol Material)</option>
+                                        <option value="planner">📊 Site Engineer / Planner (Edit Jadwal &amp; Kurva S)</option>
+                                        <option value="mandor">👷 Mandor Utama / Supervisor (Edit Kebutuhan Pekerja SNI)</option>
+                                        <option value="qc">🔍 Quality Control Engineer (Edit Inspeksi QC Mutu)</option>
+                                        <option value="risk">🛡️ HSE &amp; Risk Manager (Edit Analisis Risiko ISO 31000)</option>
+                                        <option value="waste">♻️ Petugas Lingkungan &amp; Limbah (Edit Manajemen Limbah)</option>
+                                        <option value="logistics">🚜 Koordinator Alat Berat &amp; Armada (Edit Logistik &amp; Alat)</option>
+                                        <option value="viewer">👤 Pekerja Lapangan / Viewer (Hanya Dapat Melihat Seluruh Modul)</option>
+                                    </select>
+                                    <div class="form-text small" style="font-size: 0.75rem;">Pekerja hanya dapat mengedit fitur yang bersangkutan, fitur lainnya terkunci ke mode hanya lihat.</div>
+                                </div>
+
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Password <span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control" id="portalRegPassword" placeholder="Minimal 6 karakter" required minlength="6">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Konfirmasi Password <span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control" id="portalRegPasswordConfirm" placeholder="Ulangi password" required minlength="6">
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-danger d-none py-2 px-3 small rounded-3" id="portalRegAlert"></div>
+
+                                <button type="submit" class="btn btn-success w-100 py-2 fw-bold shadow-sm rounded-3" id="btnPortalSubmitRegister">
+                                    <i class="bi bi-person-check me-2"></i>Daftarkan Akun &amp; Masuk ke Sistem
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Card -->
+                <div class="card-footer bg-light px-4 py-3 border-top small text-center text-muted">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <span><i class="bi bi-shield-check text-success me-1"></i>Sistem Terenkripsi &amp; Beroperasi Secara Offline (Local DataStore) / Online (MySQL Server)</span>
+                        <span><i class="bi bi-code-slash text-primary me-1"></i>Civil Engineering Systems - Semester 5 Aplikom</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================================================
+         2. TAMPILAN UTAMA: DASHBOARD PENMROYEK (SHOWN AFTER LOGIN)
+         ============================================================================== -->
+    <div id="appMainView" class="d-none">
+
+    <!-- ==============================================================================
+         NAVBAR & HEADER UTAMA
+         ============================================================================== -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2 sticky-top shadow-sm" style="background-color: #0f172a !important;">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                <span class="fs-4 text-primary"><i class="bi bi-buildings"></i></span>
+                <div>
+                    <span class="fw-bold tracking-wide text-white">PENMROYEK</span>
+                    <div class="small text-secondary" style="font-size: 0.72rem; letter-spacing: 0.3px;">
+                        Pengendalian dan Monitoring Proyek
+                    </div>
+                </div>
+            </a>
+            <div class="d-flex align-items-center gap-3 ms-auto">
+                <span class="brand-badge d-none d-xl-inline-block">
+                    <i class="bi bi-shield-check me-1"></i> Quality &amp; Project Control Certified
+                </span>
+
+                <!-- Tombol Dropdown Unduh Modul Panduan (Word & PDF) -->
+                <div class="dropdown d-none d-md-inline-block">
+                    <button class="btn btn-outline-light btn-sm rounded-pill dropdown-toggle px-3" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Unduh Modul Panduan Resmi">
+                        <i class="bi bi-journal-text me-1 text-warning"></i> Modul Panduan
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <li><h6 class="dropdown-header text-dark fw-bold"><i class="bi bi-book me-1"></i>Panduan &amp; Manual Sistem</h6></li>
+                        <li><a class="dropdown-item py-2" href="MODUL_PANDUAN_PENGENDALIAN_PROYEK.pdf" target="_blank" download><i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i>Download Format PDF</a></li>
+                        <li><a class="dropdown-item py-2" href="MODUL_PANDUAN_PENGENDALIAN_PROYEK.docx" download><i class="bi bi-file-earmark-word-fill text-primary me-2"></i>Download Format Word (.docx)</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2" href="MODUL_PANDUAN_PENGENDALIAN_PROYEK.html" target="_blank"><i class="bi bi-printer-fill text-success me-2"></i>Buka Versi Cetak / Web</a></li>
+                    </ul>
+                </div>
+
+                <!-- Widget User Auth (Profil Pekerja & Switch Role) -->
+                <div id="navAuthWidget" class="d-flex align-items-center">
+                    <div class="dropdown" id="dropdownUserMenu">
+                        <button class="btn btn-outline-light btn-sm d-flex align-items-center gap-2 px-3 py-1 rounded-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btnNavUserMenu">
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm" style="width:28px; height:28px; font-size: 0.85rem;" id="navAvatarIcon">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <div class="text-start d-none d-sm-block lh-1">
+                                <span class="fw-semibold d-block text-white" style="font-size: 0.78rem;" id="navUserName">Memuat...</span>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle mt-1" style="font-size: 0.65rem;" id="navUserBadge">Memuat...</span>
+                            </div>
+                            <i class="bi bi-chevron-down text-white-50 ms-1 small"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg py-2 mt-2" style="min-width: 280px; font-size: 0.85rem;">
+                            <li class="px-3 py-2 border-bottom">
+                                <div class="fw-bold text-dark" id="menuUserFullName">-</div>
+                                <div class="small text-muted" id="menuUserEmail">-</div>
+                                <div class="mt-1" id="menuUserJabatanBadge"></div>
+                            </li>
+                            <li class="px-3 py-2 bg-light border-bottom">
+                                <div class="small text-muted fw-bold mb-1"><i class="bi bi-shield-lock me-1"></i>Hak Akses Fitur Anda:</div>
+                                <div class="small text-dark" id="menuUserPermissions">-</div>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="#" onclick="openAuthModal('switch'); return false;">
+                                    <i class="bi bi-people text-primary me-2"></i>Pilih / Ganti Peran Pekerja
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="#" onclick="openAuthModal('login'); return false;">
+                                    <i class="bi bi-key text-success me-2"></i>Login Akun Lain (Email &amp; Password)
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li>
+                                <a class="dropdown-item py-2 text-danger" href="#" onclick="AuthManager.logout(); return false;">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Keluar (Sign Out)
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tombol Masuk jika logout/guest -->
+                    <button class="btn btn-primary btn-sm px-3 rounded-pill d-none" id="btnNavSignIn" onclick="openAuthModal('login')">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Masuk (Sign In)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==============================================================================
+         RINGKASAN KPI EXECUTIVE PROYEK
+         ============================================================================== -->
+    <div class="container-fluid px-4 pt-3">
+        <!-- Banner Peringatan Database MySQL -->
+        <div id="dbAlertBanner" class="alert alert-danger d-none my-2 d-flex align-items-center shadow-sm" role="alert">
+            <i class="bi bi-database-x fs-4 me-3 text-danger"></i>
+            <div>
+                <strong class="d-block" id="dbAlertTitle">Koneksi Database MySQL Belum Aktif</strong>
+                <span class="small" id="dbAlertDesc">Silakan buka XAMPP Control Panel lalu klik tombol [Start] pada MySQL, atau jalankan service MySQL di komputer Anda.</span>
+            </div>
+        </div>
+
+        <div class="row g-3" id="executiveSummaryRow">
+            <div class="col-6 col-lg-2-4 col-md-4">
+                <div class="card kpi-card p-3 border-start border-4 border-success">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="text-muted small fw-semibold">Rata-rata Progres</div>
+                            <h4 class="fw-bold text-dark mb-0" id="kpiAvgProgress">0%</h4>
+                        </div>
+                        <div class="kpi-icon-box bg-success-subtle text-success">
+                            <i class="bi bi-speedometer2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-2-4 col-md-4">
+                <div class="card kpi-card p-3 border-start border-4 border-danger">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="text-muted small fw-semibold">Reorder Material</div>
+                            <h4 class="fw-bold text-danger mb-0" id="kpiLowStock">0 Item</h4>
+                        </div>
+                        <div class="kpi-icon-box bg-danger-subtle text-danger">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-2-4 col-md-4">
+                <div class="card kpi-card p-3 border-start border-4 border-primary">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="text-muted small fw-semibold">Kebutuhan Tenaga Kerja</div>
+                            <h4 class="fw-bold text-primary mb-0" id="kpiWorkersNeeded">0 Org/Hari</h4>
+                            <div class="text-muted" id="kpiWorkersDetail" style="font-size: 0.72rem;">0 Tukang + 0 Pekerja</div>
+                            <span id="kpiWorkersPresent" class="d-none">0 Org</span>
+                        </div>
+                        <div class="kpi-icon-box bg-primary-subtle text-primary">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-2-4 col-md-6">
+                <div class="card kpi-card p-3 border-start border-4 border-warning">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="text-muted small fw-semibold">Temuan QC / Punch List</div>
+                            <h4 class="fw-bold text-warning mb-0" id="kpiActiveQc">0 Item</h4>
+                            <span id="kpiActiveMaint" class="d-none">0 Tiket</span>
+                        </div>
+                        <div class="kpi-icon-box bg-warning-subtle text-warning">
+                            <i class="bi bi-clipboard2-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-2-4 col-md-6">
+                <div class="card kpi-card p-3 border-start border-4 border-danger">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="text-muted small fw-semibold">Risiko Kritis (Critical)</div>
+                            <h4 class="fw-bold text-danger mb-0" id="kpiCritRisks">0 Isu</h4>
+                        </div>
+                        <div class="kpi-icon-box bg-danger-subtle text-danger">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==============================================================================
+             BILAH NAVIGASI 6 MODUL UTAMA
+             ============================================================================== -->
+        <div class="bg-white rounded-3 shadow-sm p-2 my-3 border">
+            <ul class="nav nav-pills nav-fill flex-column flex-sm-row gap-2" id="moduleTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="tab-material-btn" data-bs-toggle="pill" data-bs-target="#tab-material" type="button" role="tab">
+                        <i class="bi bi-box-seam me-1"></i> 📦 Kontrol Material
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-scurve-btn" data-bs-toggle="pill" data-bs-target="#tab-scurve" type="button" role="tab">
+                        <i class="bi bi-graph-up-arrow me-1"></i> 📊 Progres Jadwal &amp; Kurva S
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-labor-btn" data-bs-toggle="pill" data-bs-target="#tab-labor" type="button" role="tab">
+                        <i class="bi bi-people-fill me-1"></i> 👷 Kebutuhan Tenaga Kerja
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-qc-btn" data-bs-toggle="pill" data-bs-target="#tab-qc" type="button" role="tab">
+                        <i class="bi bi-clipboard2-check me-1"></i> 🔍 Quality Control (QC)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-risk-btn" data-bs-toggle="pill" data-bs-target="#tab-risk" type="button" role="tab">
+                        <i class="bi bi-shield-exclamation me-1"></i> 🛡️ Analisis Risiko Proyek
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-waste-btn" data-bs-toggle="pill" data-bs-target="#tab-waste" type="button" role="tab">
+                        <i class="bi bi-recycle me-1"></i> ♻️ Manajemen &amp; Analisis Limbah
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-logistics-btn" data-bs-toggle="pill" data-bs-target="#tab-logistics" type="button" role="tab">
+                        <i class="bi bi-truck me-1"></i> 🚜 Logistik &amp; Alat Berat
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ==============================================================================
+             KONTEN 5 MODUL (TAB CONTENT)
+             ============================================================================== -->
+        <div class="tab-content pb-5" id="moduleTabContent">
+
+            <!-- --------------------------------------------------------------------------
+                 MODUL 1: 📦 KONTROL MATERIAL
+                 -------------------------------------------------------------------------- -->
+            <div class="tab-pane fade show active" id="tab-material" role="tabpanel">
+                <!-- Alert Banner Mode Hanya Lihat (RBAC) -->
+                <div id="alertRbacMaterials" class="alert alert-secondary border-0 shadow-sm d-flex align-items-center justify-content-between mb-3 py-2 px-3 d-none">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-eye-fill text-secondary fs-5"></i>
+                        <div>
+                            <strong class="d-block small text-dark mb-0">Mode Hanya Lihat (Read-Only)</strong>
+                            <span class="text-muted" style="font-size:0.75rem;">Anda masuk sebagai <span class="fw-semibold rbac-user-name">Pengguna</span> (<span class="rbac-user-role">Pekerja</span>). Hak akses tulis dibatasi untuk modul Material.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAuth" onclick="AuthManager && AuthManager.openSwitchTab && AuthManager.openSwitchTab()">
+                        <i class="bi bi-arrow-left-right me-1"></i> Ganti Akun
+                    </button>
+                </div>
+                <div class="card card-custom">
+                    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-boxes text-success me-2"></i>Monitoring &amp; Kontrol Logistik Material Hijau</h5>
+                            <span class="text-muted small">Pencatatan mutasi stok material ramah lingkungan dan batas ambang minimum reorder.</span>
+                        </div>
+                        <button class="btn btn-success btn-sm px-3" data-bs-toggle="modal" data-bs-target="#modalAddMaterial">
+                            <i class="bi bi-plus-circle me-1"></i> Tambah Material Baru
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle" id="tableMaterials">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Material</th>
+                                        <th>Satuan</th>
+                                        <th>Stok Masuk</th>
+                                        <th>Stok Keluar</th>
+                                        <th>Sisa Stok</th>
+                                        <th>Min. Stok</th>
+                                        <th>Status Pengadaan</th>
+                                        <th class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyMaterials">
+                                    <!-- Rendered via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- --------------------------------------------------------------------------
+                 MODUL 2: 📊 PROGRES JADWAL & KURVA S
+                 -------------------------------------------------------------------------- -->
+            <div class="tab-pane fade" id="tab-scurve" role="tabpanel">
+                <!-- Alert Banner Mode Hanya Lihat (RBAC) -->
+                <div id="alertRbacSchedules" class="alert alert-secondary border-0 shadow-sm d-flex align-items-center justify-content-between mb-3 py-2 px-3 d-none">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-eye-fill text-secondary fs-5"></i>
+                        <div>
+                            <strong class="d-block small text-dark mb-0">Mode Hanya Lihat (Read-Only)</strong>
+                            <span class="text-muted" style="font-size:0.75rem;">Anda masuk sebagai <span class="fw-semibold rbac-user-name">Pengguna</span> (<span class="rbac-user-role">Pekerja</span>). Hak akses impor & perubahan jadwal dibatasi untuk Site Engineer/Planner.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAuth" onclick="AuthManager && AuthManager.openSwitchTab && AuthManager.openSwitchTab()">
+                        <i class="bi bi-arrow-left-right me-1"></i> Ganti Akun
+                    </button>
+                </div>
+                <!-- Banner Dampak Risiko Real-time -->
+                <div class="alert alert-warning border-warning d-flex align-items-center gap-3 shadow-sm mb-4" role="alert">
+                    <i class="bi bi-cpu-fill fs-2 text-warning"></i>
+                    <div>
+                        <strong class="d-block text-dark">Civil Engineering Risk Impact Engine Aktif:</strong>
+                        <span class="small text-secondary">
+                            Setiap penambahan risiko bertaraf <strong>Critical (Skor &ge; 20)</strong> otomatis memperpanjang durasi WBS <strong>+7 Hari</strong>, dan <strong>High (Skor &ge; 12)</strong> menambah <strong>+3 Hari</strong>. Kurva S Realisasi berikut otomatis terdistorsi (slippage) mencerminkan deviasi fisik di lapangan.
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Card Kurva S Chart.js -->
+                <div class="card card-custom mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold text-dark">
+                            <i class="bi bi-bezier2 text-primary me-2"></i>Kurva S Dinamis: Progres Rencana vs. Realisasi Lapangan
+                        </h5>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary btn-sm" onclick="loadDemoProject()" title="Muat template data proyek hijau demo">
+                                <i class="bi bi-magic me-1"></i> Muat Template Proyek
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" onclick="loadSCurveData()">
+                                <i class="bi bi-arrow-clockwise me-1"></i> Refresh Kurva S
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="scurveCanvasWrapper" style="position: relative; height: 380px; width: 100%;">
+                            <canvas id="scurveChart"></canvas>
+                        </div>
+                        <div id="scurvePlaceholder" class="d-none text-center py-5">
+                            <i class="bi bi-graph-up-arrow text-success fs-1 d-block mb-2"></i>
+                            <h6 class="text-dark fw-bold">Belum Ada Data Kurva S Terkalkulasi</h6>
+                            <p class="small text-muted mb-3">Unggah file MS Project (.mpp / .xml) atau muat contoh template untuk langsung melihat perbandingan Kurva S Rencana vs Realisasi.</p>
+                            <button class="btn btn-sm btn-success px-3" onclick="loadDemoProject()">
+                                <i class="bi bi-magic me-1"></i> Muat Template Proyek Green Building
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bagian Upload MS Project & Tabel WBS -->
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="card card-custom h-100">
+                            <div class="card-header">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-file-earmark-code text-success me-2"></i>Import Jadwal (.mpp / .xml / .xlsx / .csv)
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted mb-2">
+                                    Unggah file jadwal Microsoft Project (<strong>.mpp</strong>, <strong>.xml</strong>) atau Spreadsheet (<strong>.xlsx</strong>, <strong>.csv</strong>) untuk otomatis mengekstrak paket WBS dan merekonstruksi Kurva S.
+                                </p>
+                                <div class="d-flex gap-1 mb-3 flex-wrap">
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-file-earmark-binary me-1"></i>.MPP</span>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-filetype-xml me-1"></i>.XML</span>
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle"><i class="bi bi-file-earmark-excel me-1"></i>.XLSX</span>
+                                    <span class="badge bg-secondary-subtle text-secondary border"><i class="bi bi-filetype-csv me-1"></i>.CSV</span>
+                                </div>
+                                <form id="formXmlUpload" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Pilih File Jadwal (.mpp, .xml, .xlsx, .csv)</label>
+                                        <input type="file" class="form-control" id="inputXmlFile" name="xml_file" accept=".mpp,.xml,.xlsx,.xls,.csv" required>
+                                        <div class="form-text small" style="font-size: 0.72rem;">Mendukung langsung file Microsoft Project &amp; Excel.</div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 mb-2 fw-semibold" id="btnUploadXml">
+                                        <i class="bi bi-cloud-arrow-up me-1"></i> Unggah &amp; Kalkulasi Kurva S
+                                    </button>
+                                    <button type="button" class="btn btn-outline-success w-100 btn-sm mb-2" onclick="loadDemoProject()">
+                                        <i class="bi bi-magic me-1"></i> Gunakan Template Demo Proyek (1-Klik)
+                                    </button>
+                                </form>
+                                <hr class="my-2">
+                                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                    <a href="sample_project.xml" download class="btn btn-sm btn-link text-decoration-none" style="font-size: 0.75rem;">
+                                        <i class="bi bi-filetype-xml me-1 text-danger"></i> Contoh XML
+                                    </a>
+                                    <button type="button" onclick="downloadCsvTemplate()" class="btn btn-sm btn-link text-decoration-none text-success" style="font-size: 0.75rem;">
+                                        <i class="bi bi-file-earmark-spreadsheet me-1"></i> Template Excel/CSV
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-link text-decoration-none text-info" onclick="openMppGuideModal()" style="font-size: 0.75rem;">
+                                        <i class="bi bi-question-circle me-1"></i> Panduan .MPP
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <div class="card card-custom h-100">
+                            <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-list-task text-primary me-2"></i>Daftar Item WBS (Work Breakdown Structure)
+                                </h6>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="loadDemoProject()" title="Muat template jadwal proyek hijau lengkap">
+                                        <i class="bi bi-magic me-1"></i> Muat Template
+                                    </button>
+                                    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAddWbs">
+                                        <i class="bi bi-plus-circle me-1"></i> Tambah WBS Manual
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0" id="tableSchedules">
+                                        <thead>
+                                            <tr>
+                                                <th>Nama Pekerjaan</th>
+                                                <th>Mulai</th>
+                                                <th>Selesai (Target)</th>
+                                                <th class="text-center">Bobot</th>
+                                                <th class="text-center">Rencana</th>
+                                                <th>Realisasi (%)</th>
+                                                <th>Status</th>
+                                                <th class="text-center" style="min-width: 140px;">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodySchedules">
+                                            <!-- Rendered via JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- --------------------------------------------------------------------------
+                 MODUL 3: 👷 KEBUTUHAN TENAGA KERJA (KOEFISIEN TUKANG & PEKERJA, VOLUME, TARGET HARI)
+                 -------------------------------------------------------------------------- -->
+            <div class="tab-pane fade" id="tab-labor" role="tabpanel">
+                <!-- Alert Banner Mode Hanya Lihat (RBAC) -->
+                <div id="alertRbacLabor" class="alert alert-secondary border-0 shadow-sm d-flex align-items-center justify-content-between mb-3 py-2 px-3 d-none">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-eye-fill text-secondary fs-5"></i>
+                        <div>
+                            <strong class="d-block small text-dark mb-0">Mode Hanya Lihat (Read-Only)</strong>
+                            <span class="text-muted" style="font-size:0.75rem;">Anda masuk sebagai <span class="fw-semibold rbac-user-name">Pengguna</span> (<span class="rbac-user-role">Pekerja</span>). Hak input & modifikasi analisis kebutuhan tenaga kerja dibatasi untuk Mandor / Site Supervisor.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAuth" onclick="AuthManager && AuthManager.openSwitchTab && AuthManager.openSwitchTab()">
+                        <i class="bi bi-arrow-left-right me-1"></i> Ganti Akun
+                    </button>
+                </div>
+                <!-- Row Mini KPI Ringkasan Kebutuhan Tenaga Kerja -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3">
+                        <div class="card border-0 bg-primary-subtle text-primary p-3 rounded-3 shadow-sm h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Kebutuhan Pekerja</div>
+                                    <h3 class="fw-bold mb-0 text-primary" id="statPekerjaPerHari">0</h3>
+                                    <small class="text-muted" style="font-size:0.75rem;">Orang / Hari</small>
+                                </div>
+                                <div class="p-3 bg-white rounded-circle shadow-sm text-primary">
+                                    <i class="bi bi-person-walking fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card border-0 bg-success-subtle text-success p-3 rounded-3 shadow-sm h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Kebutuhan Tukang</div>
+                                    <h3 class="fw-bold mb-0 text-success" id="statTukangPerHari">0</h3>
+                                    <small class="text-muted" style="font-size:0.75rem;">Orang / Hari</small>
+                                </div>
+                                <div class="p-3 bg-white rounded-circle shadow-sm text-success">
+                                    <i class="bi bi-tools fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card border-0 bg-info-subtle text-info p-3 rounded-3 shadow-sm h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Total Tenaga Kerja</div>
+                                    <h3 class="fw-bold mb-0 text-info" id="statTotalTenagaPerHari">0</h3>
+                                    <small class="text-muted" style="font-size:0.75rem;">Total di Lapangan / Hari</small>
+                                </div>
+                                <div class="p-3 bg-white rounded-circle shadow-sm text-info">
+                                    <i class="bi bi-people-fill fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card border-0 bg-warning-subtle text-warning-emphasis p-3 rounded-3 shadow-sm h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Total Beban Kerja</div>
+                                    <h3 class="fw-bold mb-0 text-warning-emphasis" id="statTotalManDays">0</h3>
+                                    <small class="text-muted" style="font-size:0.75rem;">Man-Days (Orang-Hari / OH)</small>
+                                </div>
+                                <div class="p-3 bg-white rounded-circle shadow-sm text-warning-emphasis">
+                                    <i class="bi bi-calendar2-check fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Form Input & Live Calculator Kebutuhan Tenaga Kerja -->
+                    <div class="col-lg-5 col-xl-4">
+                        <div class="card card-custom">
+                            <div class="card-header bg-white border-bottom">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-calculator text-primary me-2"></i>Kalkulator Kebutuhan Tenaga Kerja
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <!-- Preset Dropdown -->
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Template Preset AHSP (Standar SNI PUPR)</label>
+                                    <select class="form-select form-select-sm" id="laborPresetSelect">
+                                        <option value="">-- Pilih Preset AHSP (Otomatis Isi Koefisien) --</option>
+                                        <option value="preset_beton">Pengecoran Beton Ready Mix Rendah Emisi</option>
+                                        <option value="preset_besi">Fabrikasi &amp; Erection Pembesian Baja BJTS</option>
+                                        <option value="preset_bata">Pasangan Dinding Bata Ringan (AAC Block)</option>
+                                        <option value="preset_plester">Plesteran &amp; Acian Mortar Dinding</option>
+                                        <option value="preset_galian">Galian Tanah Pondasi &amp; Bore Pile</option>
+                                        <option value="preset_mep">Instalasi MEP, Solar Rooftop &amp; Plumbing</option>
+                                        <option value="preset_cat">Pengecatan Dinding Eco-Shield Low-VOC</option>
+                                    </select>
+                                    <div class="form-text small" style="font-size:0.72rem;">Memilih preset otomatis mempopulasi nama, koefisien tukang &amp; pekerja sesuai SNI.</div>
+                                </div>
+
+                                <form id="formLaborRequirement">
+                                    <!-- Pilihan Sinkronisasi WBS -->
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Sinkronisasi Paket Pekerjaan WBS</label>
+                                        <select class="form-select form-select-sm" id="laborWbsSelect">
+                                            <option value="">-- Pilih dari Jadwal WBS Proyek (Opsional) --</option>
+                                        </select>
+                                        <div class="form-text small" style="font-size:0.72rem;">Memilih WBS akan menyelaraskan target durasi pelaksanaan.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Nama Pekerjaan <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="laborNamaPekerjaan" placeholder="Contoh: Pengecoran Green Concrete Kolom &amp; Balok" required>
+                                    </div>
+
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-7">
+                                            <label class="form-label small fw-bold">Volume Pekerjaan <span class="text-danger">*</span></label>
+                                            <input type="number" step="0.01" min="0.01" class="form-control" id="laborVolume" placeholder="Contoh: 450.00" required>
+                                        </div>
+                                        <div class="col-5">
+                                            <label class="form-label small fw-bold">Satuan <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="laborSatuan" required>
+                                                <option value="m³">m³</option>
+                                                <option value="m²">m²</option>
+                                                <option value="m">m (meter)</option>
+                                                <option value="kg">kg</option>
+                                                <option value="ton">ton</option>
+                                                <option value="titik">titik / unit</option>
+                                                <option value="ls">Lumpsum (ls)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Panel Koefisien -->
+                                    <div class="p-3 mb-3 rounded bg-light border">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="fw-bold small text-dark"><i class="bi bi-sliders me-1"></i>Koefisien Tenaga Kerja</span>
+                                            <span class="badge bg-secondary-subtle text-secondary small" style="font-size:0.68rem;">SNI / AHSP</span>
+                                        </div>
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <label class="form-label small fw-bold text-secondary mb-1">Koef. Pekerja (OH) <span class="text-danger">*</span></label>
+                                                <input type="number" step="0.0001" min="0" class="form-control" id="laborKoefPekerja" placeholder="0.2500" required>
+                                                <div class="form-text small" style="font-size:0.68rem;">OH / unit volume</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label small fw-bold text-secondary mb-1">Koef. Tukang (OH) <span class="text-danger">*</span></label>
+                                                <input type="number" step="0.0001" min="0" class="form-control" id="laborKoefTukang" placeholder="0.0500" required>
+                                                <div class="form-text small" style="font-size:0.68rem;">OH / unit volume</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Target Hari Selesai (Durasi Pelaksanaan) <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="number" step="1" min="1" class="form-control" id="laborTargetHari" placeholder="Contoh: 25" required>
+                                            <span class="input-group-text small">Hari Kerja</span>
+                                        </div>
+                                        <div class="form-text small" style="font-size:0.72rem;">Jumlah hari kerja yang ditargetkan untuk menuntaskan seluruh volume pekerjaan.</div>
+                                    </div>
+
+                                    <!-- LIVE PREVIEW HASIL HITUNGAN -->
+                                    <div class="card bg-success-subtle border-success border-opacity-50 mb-3 shadow-none">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="small fw-bold text-success"><i class="bi bi-lightning-charge-fill me-1"></i>Kalkulasi Kebutuhan Tenaga Kerja:</span>
+                                                <span class="badge bg-success" id="previewTotalTenagaBadge">0 Orang / Hari</span>
+                                            </div>
+                                            <div class="small text-muted mb-1 d-flex justify-content-between align-items-center">
+                                                <span>👷 Kebutuhan Pekerja / Hari:</span>
+                                                <strong class="text-dark" id="previewPekerjaHari">0 Orang <span class="fw-normal text-muted" id="previewOhPekerja">(0.00 OH)</span></strong>
+                                            </div>
+                                            <div class="small text-muted mb-1 d-flex justify-content-between align-items-center">
+                                                <span>🔨 Kebutuhan Tukang / Hari:</span>
+                                                <strong class="text-dark" id="previewTukangHari">0 Orang <span class="fw-normal text-muted" id="previewOhTukang">(0.00 OH)</span></strong>
+                                            </div>
+                                            <div class="small text-muted d-flex justify-content-between align-items-center pt-2 border-top">
+                                                <span>📊 Total Man-Days (OH):</span>
+                                                <strong class="text-success" id="previewTotalOh">0.00 Orang-Hari</strong>
+                                            </div>
+                                            <div class="small text-muted mt-2 pt-1 border-top" id="previewRasioRegu" style="font-size:0.75rem;">
+                                                💡 Komposisi Regu: <strong>Ketik angka untuk melihat estimasi</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Catatan / Acuan Standar (Opsional)</label>
+                                        <input type="text" class="form-control form-control-sm" id="laborCatatan" placeholder="Contoh: Acuan AHSP SNI Permen PUPR No. 1/2022">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success w-100 fw-semibold" id="btnSubmitLabor">
+                                        <i class="bi bi-plus-circle me-1"></i> Simpan Analisis Kebutuhan
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabel Rekapitulasi Kebutuhan Tenaga Kerja -->
+                    <div class="col-lg-7 col-xl-8">
+                        <div class="card card-custom">
+                            <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-person-lines-fill text-primary me-2"></i>Rekapitulasi Kebutuhan Tenaga Kerja per Pekerjaan
+                                </h6>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="exportLaborRequirements()">
+                                        <i class="bi bi-printer me-1"></i> Cetak / Ekspor
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="loadLaborData()">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0" id="tableLabor">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Nama Pekerjaan</th>
+                                                <th>Volume &amp; Satuan</th>
+                                                <th>Koefisien (P &amp; T)</th>
+                                                <th>Target Hari</th>
+                                                <th>Total OH (Man-Days)</th>
+                                                <th class="table-primary text-center">Kebutuhan / Hari</th>
+                                                <th>Rasio Regu</th>
+                                                <th class="text-center">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyLabor">
+                                            <!-- Rendered via JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- --------------------------------------------------------------------------
+                 MODUL 4: 🔍 QUALITY CONTROL (QC) & KENDALI MUTU KONSTRUKSI
+                 -------------------------------------------------------------------------- -->
+            <div class="tab-pane fade" id="tab-qc" role="tabpanel">
+                <!-- Alert Banner Mode Hanya Lihat (RBAC) -->
+                <div id="alertRbacQc" class="alert alert-secondary border-0 shadow-sm d-flex align-items-center justify-content-between mb-3 py-2 px-3 d-none">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-eye-fill text-secondary fs-5"></i>
+                        <div>
+                            <strong class="d-block small text-dark mb-0">Mode Hanya Lihat (Read-Only)</strong>
+                            <span class="text-muted" style="font-size:0.75rem;">Anda masuk sebagai <span class="fw-semibold rbac-user-name">Pengguna</span> (<span class="rbac-user-role">Pekerja</span>). Hak catat inspeksi QC & status punch list dibatasi untuk Quality Control Inspector.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAuth" onclick="AuthManager && AuthManager.openSwitchTab && AuthManager.openSwitchTab()">
+                        <i class="bi bi-arrow-left-right me-1"></i> Ganti Akun
+                    </button>
+                </div>
+                <!-- Mini Stat Cards QC -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3">
+                        <div class="card border-0 bg-primary-subtle text-primary p-3 rounded-3 shadow-sm h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Total Item QC</div>
+                                    <h3 class="fw-bold mb-0 text-primary" id="statQcTotal">0</h3>
+                                    <small class="text-muted" style="font-size:0.75rem;">Item Diinspeksi</small>
+                                </div>
+                                <div class="p-3 bg-white rounded-circle shadow-sm text-primary">
+                                    <i class="bi bi-clipboard2-check fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card border-0 bg-success-subtle text-success p-3 rounded-3 shadow-sm h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Lolos QC / Approved</div>
+                                    <h3 class="fw-bold mb-0 text-success" id="statQcApproved">0</h3>
+                                    <small class="text-muted" style="font-size:0.75rem;">Memenuhi Standar Mutu</small>
+                                </div>
+                                <div class="p-3 bg-white rounded-circle shadow-sm text-success">
+                                    <i class="bi bi-check-circle fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card border-0 bg-warning-subtle text-warning-emphasis p-3 rounded-3 shadow-sm h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Punch List / Rework</div>
+                                    <h3 class="fw-bold mb-0 text-warning-emphasis" id="statQcPunchList">0</h3>
+                                    <small class="text-muted" style="font-size:0.75rem;">Perlu Perbaikan</small>
+                                </div>
+                                <div class="p-3 bg-white rounded-circle shadow-sm text-warning-emphasis">
+                                    <i class="bi bi-tools fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card border-0 bg-danger-subtle text-danger p-3 rounded-3 shadow-sm h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Ditolak / Rejected</div>
+                                    <h3 class="fw-bold mb-0 text-danger" id="statQcRejected">0</h3>
+                                    <small class="text-muted" style="font-size:0.75rem;">Cacat Kritis / Gagal Uji</small>
+                                </div>
+                                <div class="p-3 bg-white rounded-circle shadow-sm text-danger">
+                                    <i class="bi bi-x-circle fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Form Input Inspeksi QC -->
+                    <div class="col-lg-4">
+                        <div class="card card-custom">
+                            <div class="card-header bg-white border-bottom">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-patch-check text-warning me-2"></i>Registrasi Inspeksi Quality Control
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <form id="formQualityControl" enctype="multipart/form-data">
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Item Pekerjaan / Komponen Diinspeksi <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control form-control-sm" id="qcItemPekerjaan" name="item_pekerjaan" placeholder="Contoh: Pengecoran Beton Kolom Lt. 2 (Zona A)" required>
+                                    </div>
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Divisi / Kategori QC <span class="text-danger">*</span></label>
+                                            <select class="form-select form-select-sm" id="qcKategori" name="kategori" required>
+                                                <option value="Struktur &amp; Pembesian">Struktur &amp; Pembesian</option>
+                                                <option value="Arsitektur &amp; Façade">Arsitektur &amp; Façade</option>
+                                                <option value="MEP &amp; Plumbing">MEP &amp; Plumbing</option>
+                                                <option value="Geoteknik &amp; Pondasi">Geoteknik &amp; Pondasi</option>
+                                                <option value="Material Masuk (QC Inflow)">Material Masuk (QC Inflow)</option>
+                                                <option value="Finishing &amp; Interior">Finishing &amp; Interior</option>
+                                                <option value="K3 &amp; Fasilitas Hijau">K3 &amp; Fasilitas Hijau</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Tanggal Inspeksi <span class="text-danger">*</span></label>
+                                            <input type="date" class="form-control form-control-sm" id="qcTanggal" name="tanggal_inspeksi" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Metode / Parameter Pengujian Mutu <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control form-control-sm" id="qcMetodeUji" name="metode_uji" placeholder="Contoh: Uji Slump (12±2 cm) &amp; Uji Kuat Tekan fc' 30 MPa" required>
+                                    </div>
+
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Standar Acuan / RKS</label>
+                                            <input type="text" class="form-control form-control-sm" id="qcStandarAcuan" name="standar_acuan" placeholder="SNI 2847:2019 / RKS Proyek">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">QC Inspector / PIC <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-sm" id="qcPic" name="pic" placeholder="Ir. Reza (QC Eng.)" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Tingkat Severity Defect</label>
+                                            <select class="form-select form-select-sm" id="qcUrgensi" name="urgensi" required>
+                                                <option value="Minor">Minor (Estetik / Deviasi Rendah)</option>
+                                                <option value="Moderate" selected>Moderate (Perlu Penyesuaian)</option>
+                                                <option value="Major">Major (Potensi Gangguan Fungsi)</option>
+                                                <option value="Critical">Critical (Cacat Struktural / Fatal)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Status Hasil QC <span class="text-danger">*</span></label>
+                                            <select class="form-select form-select-sm" id="qcStatus" name="status" required>
+                                                <option value="Lolos QC / Approved" class="text-success">Lolos QC / Approved</option>
+                                                <option value="Perlu Perbaikan / Punch List" selected class="text-warning">Perlu Perbaikan / Punch List</option>
+                                                <option value="Ditolak / Rejected" class="text-danger">Ditolak / Rejected</option>
+                                                <option value="Menunggu Uji Lab" class="text-info">Menunggu Uji Lab</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Catatan Temuan &amp; Rekomendasi Tindak Lanjut</label>
+                                        <textarea class="form-control form-control-sm" id="qcDeskripsi" name="deskripsi" rows="3" placeholder="Rincikan deviasi mutu, lokasi as, dan instruksi perbaikan (corrective action)..."></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Upload Foto Inspeksi / Benda Uji</label>
+                                        <input type="file" class="form-control form-control-sm" id="qcFoto" name="foto_inspeksi" accept="image/*">
+                                        <div class="form-text small" style="font-size:0.72rem;">Dokumentasi visual cacat fisik atau sertifikat hasil uji lab.</div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-warning w-100 fw-bold" id="btnSubmitQc">
+                                        <i class="bi bi-shield-check me-1"></i> Simpan Laporan Inspeksi QC
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabel Log Quality Control -->
+                    <div class="col-lg-8">
+                        <div class="card card-custom">
+                            <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-journal-check text-primary me-2"></i>Log &amp; Rekapitulasi Inspeksi Quality Control Lapangan
+                                </h6>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="exportQualityControlReport()">
+                                        <i class="bi bi-printer me-1"></i> Cetak Laporan QC
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="loadQualityControlData()">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0" id="tableQualityControl">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Foto</th>
+                                                <th>Item Pekerjaan &amp; Kategori</th>
+                                                <th>Metode Uji &amp; Standar</th>
+                                                <th>QC Inspector &amp; Tgl</th>
+                                                <th>Severity</th>
+                                                <th>Status Hasil QC</th>
+                                                <th class="text-center">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyQualityControl">
+                                            <!-- Rendered via JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- --------------------------------------------------------------------------
+                 MODUL 5: 🛡️ ANALISIS LIMBAH & RISIKO
+                 -------------------------------------------------------------------------- -->
+            <div class="tab-pane fade" id="tab-risk" role="tabpanel">
+                <!-- Alert Banner Mode Hanya Lihat (RBAC) -->
+                <div id="alertRbacRisks" class="alert alert-secondary border-0 shadow-sm d-flex align-items-center justify-content-between mb-3 py-2 px-3 d-none">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-eye-fill text-secondary fs-5"></i>
+                        <div>
+                            <strong class="d-block small text-dark mb-0">Mode Hanya Lihat (Read-Only)</strong>
+                            <span class="text-muted" style="font-size:0.75rem;">Anda masuk sebagai <span class="fw-semibold rbac-user-name">Pengguna</span> (<span class="rbac-user-role">Pekerja</span>). Hak mitigasi dan pendaftaran risiko dibatasi untuk Petugas HSE / Ahli K3 Konstruksi.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAuth" onclick="AuthManager && AuthManager.openSwitchTab && AuthManager.openSwitchTab()">
+                        <i class="bi bi-arrow-left-right me-1"></i> Ganti Akun
+                    </button>
+                </div>
+                <div class="row g-4">
+                    <!-- Matriks Risiko 5x5 -->
+                    <div class="col-lg-7">
+                        <div class="card card-custom mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-grid-3x3 text-danger me-2"></i>Matriks Risiko Konstruksi Hijau 5x5
+                                </h6>
+                                <span class="badge bg-secondary">ISO 31000 Risk Matrix</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="risk-matrix-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 120px;" class="text-muted">Probabilitas \ Dampak</th>
+                                                <th>1 (Insignifikan)</th>
+                                                <th>2 (Minor)</th>
+                                                <th>3 (Moderat)</th>
+                                                <th>4 (Mayor)</th>
+                                                <th>5 (Katastropik)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Row 5 (P = 5) -->
+                                            <tr>
+                                                <th class="text-end pe-2">5 (Sangat Sering)</th>
+                                                <td class="risk-matrix-cell cell-medium" id="cell-5-1">0</td>
+                                                <td class="risk-matrix-cell cell-high" id="cell-5-2">0</td>
+                                                <td class="risk-matrix-cell cell-high" id="cell-5-3">0</td>
+                                                <td class="risk-matrix-cell cell-critical" id="cell-5-4">0</td>
+                                                <td class="risk-matrix-cell cell-critical" id="cell-5-5">0</td>
+                                            </tr>
+                                            <!-- Row 4 (P = 4) -->
+                                            <tr>
+                                                <th class="text-end pe-2">4 (Sering)</th>
+                                                <td class="risk-matrix-cell cell-medium" id="cell-4-1">0</td>
+                                                <td class="risk-matrix-cell cell-medium" id="cell-4-2">0</td>
+                                                <td class="risk-matrix-cell cell-high" id="cell-4-3">0</td>
+                                                <td class="risk-matrix-cell cell-high" id="cell-4-4">0</td>
+                                                <td class="risk-matrix-cell cell-critical" id="cell-4-5">0</td>
+                                            </tr>
+                                            <!-- Row 3 (P = 3) -->
+                                            <tr>
+                                                <th class="text-end pe-2">3 (Mungkin)</th>
+                                                <td class="risk-matrix-cell cell-low" id="cell-3-1">0</td>
+                                                <td class="risk-matrix-cell cell-medium" id="cell-3-2">0</td>
+                                                <td class="risk-matrix-cell cell-medium" id="cell-3-3">0</td>
+                                                <td class="risk-matrix-cell cell-high" id="cell-3-4">0</td>
+                                                <td class="risk-matrix-cell cell-high" id="cell-3-5">0</td>
+                                            </tr>
+                                            <!-- Row 2 (P = 2) -->
+                                            <tr>
+                                                <th class="text-end pe-2">2 (Jarang)</th>
+                                                <td class="risk-matrix-cell cell-low" id="cell-2-1">0</td>
+                                                <td class="risk-matrix-cell cell-low" id="cell-2-2">0</td>
+                                                <td class="risk-matrix-cell cell-medium" id="cell-2-3">0</td>
+                                                <td class="risk-matrix-cell cell-medium" id="cell-2-4">0</td>
+                                                <td class="risk-matrix-cell cell-high" id="cell-2-5">0</td>
+                                            </tr>
+                                            <!-- Row 1 (P = 1) -->
+                                            <tr>
+                                                <th class="text-end pe-2">1 (Sangat Jarang)</th>
+                                                <td class="risk-matrix-cell cell-low" id="cell-1-1">0</td>
+                                                <td class="risk-matrix-cell cell-low" id="cell-1-2">0</td>
+                                                <td class="risk-matrix-cell cell-low" id="cell-1-3">0</td>
+                                                <td class="risk-matrix-cell cell-medium" id="cell-1-4">0</td>
+                                                <td class="risk-matrix-cell cell-medium" id="cell-1-5">0</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex justify-content-center gap-3 mt-3 flex-wrap small">
+                                    <span><span class="badge bg-success me-1">&nbsp;</span> Low (1-5)</span>
+                                    <span><span class="badge bg-warning text-dark me-1">&nbsp;</span> Medium (6-11)</span>
+                                    <span><span class="badge bg-warning text-dark me-1" style="background-color: #f97316 !important;">&nbsp;</span> High (12-19)</span>
+                                    <span><span class="badge bg-danger me-1">&nbsp;</span> Critical (20-25)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kesimpulan Status Risiko Proyek -->
+                        <div class="card card-custom">
+                            <div class="card-header">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-heart-pulse text-danger me-2"></i>Kesimpulan Status Risiko &amp; Kesehatan Proyek
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="projectRiskSummaryCard">
+                                    <!-- Rendered dynamically via JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Input Risiko Baru & Engine Trigger -->
+                    <div class="col-lg-5">
+                        <div class="card card-custom">
+                            <div class="card-header">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-shield-plus text-danger me-2"></i>Input Risiko Proyek (WBS Risk Engine)
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <form id="formRisk">
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Nama Risiko / Potensi Bahaya</label>
+                                        <input type="text" class="form-control form-control-sm" id="riskNama" placeholder="Contoh: Kerusakan Tower Crane / Keterlambatan Pasokan Baja" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Kategori Risiko</label>
+                                        <select class="form-select form-select-sm" id="riskKategori" required>
+                                            <option value="K3 &amp; Keselamatan Kerja">K3 &amp; Keselamatan Kerja</option>
+                                            <option value="Mutu &amp; Kualitas Material">Mutu &amp; Kualitas Material</option>
+                                            <option value="Waktu &amp; Jadwal (Delay)">Waktu &amp; Jadwal (Delay)</option>
+                                            <option value="Biaya &amp; Finansial">Biaya &amp; Finansial</option>
+                                            <option value="Struktur &amp; Geoteknik Lapangan">Struktur &amp; Geoteknik Lapangan</option>
+                                            <option value="Faktor Cuaca &amp; Alam">Faktor Cuaca &amp; Alam</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Pekerjaan WBS Terkait (Target Dampak)</label>
+                                        <select class="form-select form-select-sm" id="riskWbsSelect" required>
+                                            <option value="">Memuat daftar WBS...</option>
+                                        </select>
+                                        <div class="form-text small">Risiko Critical/High akan otomatis mendistorsi durasi pekerjaan ini!</div>
+                                    </div>
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Probability (1-5)</label>
+                                            <select class="form-select form-select-sm" id="riskProb" required onchange="updateRiskScorePreview()">
+                                                <option value="1">1 - Sangat Jarang</option>
+                                                <option value="2">2 - Jarang</option>
+                                                <option value="3" selected>3 - Mungkin</option>
+                                                <option value="4">4 - Sering</option>
+                                                <option value="5">5 - Sangat Sering</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Impact (1-5)</label>
+                                            <select class="form-select form-select-sm" id="riskImpact" required onchange="updateRiskScorePreview()">
+                                                <option value="1">1 - Insignifikan</option>
+                                                <option value="2">2 - Minor</option>
+                                                <option value="3">3 - Moderat</option>
+                                                <option value="4" selected>4 - Mayor</option>
+                                                <option value="5">5 - Katastropik</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Live Dynamic Risk Calculation Indicator -->
+                                    <div class="mb-3" id="riskScorePreviewBox">
+                                        <!-- Rendered via JS -->
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Rencana Mitigasi &amp; Tindakan Pencegahan</label>
+                                        <textarea class="form-control form-control-sm" id="riskMitigasi" rows="2" placeholder="Tindakan mitigasi rekayasa teknik sipil..."></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Status Penanganan</label>
+                                        <select class="form-select form-select-sm" id="riskStatus" required>
+                                            <option value="Open">Open (Masih Aktif)</option>
+                                            <option value="Mitigated">Mitigated (Terkendali)</option>
+                                            <option value="Closed">Closed (Selesai)</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger w-100 fw-bold" id="btnSubmitRisk">
+                                        <i class="bi bi-shield-shaded me-1"></i> Simpan Risiko &amp; Jalankan Risk Engine
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabel Riwayat Analisis Risiko -->
+                <div class="card card-custom mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-bold text-dark">
+                            <i class="bi bi-table text-primary me-2"></i>Daftar Risiko Teridentifikasi &amp; Dampak Terhadap WBS
+                        </h6>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="loadRisksData()">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="tableRisks">
+                                <thead>
+                                    <tr>
+                                        <th>Risiko &amp; Kategori</th>
+                                        <th>WBS Terkait</th>
+                                        <th class="text-center">Prob x Imp</th>
+                                        <th>Skor &amp; Level</th>
+                                        <th>Dampak Jadwal</th>
+                                        <th>Mitigasi</th>
+                                        <th>Status</th>
+                                        <th class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyRisks">
+                                    <!-- Rendered via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- --------------------------------------------------------------------------
+                 MODUL 6: ♻️ MANAJEMEN & ANALISIS LIMBAH KONSTRUKSI (TERPISAH)
+                 -------------------------------------------------------------------------- -->
+            <div class="tab-pane fade" id="tab-waste" role="tabpanel">
+                <!-- Alert Banner Mode Hanya Lihat (RBAC) -->
+                <div id="alertRbacWaste" class="alert alert-secondary border-0 shadow-sm d-flex align-items-center justify-content-between mb-3 py-2 px-3 d-none">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-eye-fill text-secondary fs-5"></i>
+                        <div>
+                            <strong class="d-block small text-dark mb-0">Mode Hanya Lihat (Read-Only)</strong>
+                            <span class="text-muted" style="font-size:0.75rem;">Anda masuk sebagai <span class="fw-semibold rbac-user-name">Pengguna</span> (<span class="rbac-user-role">Pekerja</span>). Hak input log timbulan & daur ulang limbah dibatasi untuk Petugas Lingkungan & Limbah.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAuth" onclick="AuthManager && AuthManager.openSwitchTab && AuthManager.openSwitchTab()">
+                        <i class="bi bi-arrow-left-right me-1"></i> Ganti Akun
+                    </button>
+                </div>
+                <!-- KPI Limbah Konstruksi Hijau -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3">
+                        <div class="card p-3 border-0 shadow-sm rounded-3 bg-white border-start border-4 border-secondary">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Total Limbah Timbul</div>
+                                    <h4 class="fw-bold text-dark mb-0" id="kpiWasteTotal">0 Kg</h4>
+                                </div>
+                                <div class="kpi-icon-box bg-secondary-subtle text-secondary">
+                                    <i class="bi bi-trash3"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card p-3 border-0 shadow-sm rounded-3 bg-white border-start border-4 border-success">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Waste Diversion Rate</div>
+                                    <h4 class="fw-bold text-success mb-0" id="kpiWasteDiversion">0%</h4>
+                                </div>
+                                <div class="kpi-icon-box bg-success-subtle text-success">
+                                    <i class="bi bi-recycle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card p-3 border-0 shadow-sm rounded-3 bg-white border-start border-4 border-danger">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Limbah B3 Terkelola</div>
+                                    <h4 class="fw-bold text-danger mb-0" id="kpiWasteB3">0 Item</h4>
+                                </div>
+                                <div class="kpi-icon-box bg-danger-subtle text-danger">
+                                    <i class="bi bi-radioactive"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card p-3 border-0 shadow-sm rounded-3 bg-white border-start border-4 border-warning">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Tersimpan di TPS</div>
+                                    <h4 class="fw-bold text-warning mb-0" id="kpiWasteTPS">0 Item</h4>
+                                </div>
+                                <div class="kpi-icon-box bg-warning-subtle text-warning">
+                                    <i class="bi bi-building-exclamation"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Form Registrasi Timbulan Limbah -->
+                    <div class="col-lg-5">
+                        <div class="card card-custom">
+                            <div class="card-header">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-plus-circle text-success me-2"></i>Registrasi Timbulan Limbah Proyek
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <form id="formWaste" enctype="multipart/form-data" novalidate>
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Tanggal Timbul</label>
+                                            <input type="date" class="form-control form-control-sm" id="wasteTanggal" name="tanggal" required>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Kategori Limbah</label>
+                                            <select class="form-select form-select-sm" id="wasteKategori" name="kategori" required>
+                                                <option value="Limbah Padat Daur Ulang">Limbah Padat Daur Ulang</option>
+                                                <option value="Limbah B3">Limbah B3 (Berbahaya &amp; Beracun)</option>
+                                                <option value="Limbah Non-B3 / Demolisi">Limbah Non-B3 / Demolisi</option>
+                                                <option value="Limbah Domestik / Organik">Limbah Domestik / Organik</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Nama / Jenis Material Limbah</label>
+                                        <input type="text" class="form-control form-control-sm" id="wasteNama" name="nama_limbah" placeholder="Contoh: Sisa Potongan Besi Beton / Oli Bekas" required>
+                                    </div>
+
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Volume / Jumlah</label>
+                                            <input type="number" step="0.01" class="form-control form-control-sm" id="wasteVolume" name="volume" placeholder="0" required>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Satuan</label>
+                                            <select class="form-select form-select-sm" id="wasteSatuan" name="satuan">
+                                                <option value="Kg">Kg</option>
+                                                <option value="Ton">Ton</option>
+                                                <option value="Liter">Liter</option>
+                                                <option value="M3">M3</option>
+                                                <option value="Drum">Drum</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Metode Pengelolaan (3R)</label>
+                                            <select class="form-select form-select-sm" id="wasteMetode" name="metode_pengelolaan">
+                                                <option value="Recycle">Recycle (Daur Ulang)</option>
+                                                <option value="Reuse">Reuse (Guna Ulang di Proyek)</option>
+                                                <option value="Diserahkan ke Pihak ke-3 Berizin">Diserahkan ke Pihak ke-3 Berizin</option>
+                                                <option value="Penampungan TPS Sementara">Penampungan TPS Sementara</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Status Penanganan</label>
+                                            <select class="form-select form-select-sm" id="wasteStatus" name="status">
+                                                <option value="Tersimpan di TPS">Tersimpan di TPS</option>
+                                                <option value="Selesai Terangkut / Didaur Ulang">Selesai Terangkut / Didaur Ulang</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Vendor Pengolah / Mitra Penerima</label>
+                                        <input type="text" class="form-control form-control-sm" id="wasteVendor" name="vendor_pengolah" placeholder="Contoh: PT. Baja Daur Ulang / TPS B3">
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Bukti Manifest / Foto TPS</label>
+                                        <input type="file" class="form-control form-control-sm" id="wasteFile" name="bukti_manifest" accept="image/*,.pdf">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Keterangan / Berita Acara</label>
+                                        <textarea class="form-control form-control-sm" id="wasteKeterangan" name="keterangan" rows="2" placeholder="Catatan pemilahan, nomor manifest, lokasi TPS..."></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success w-100 fw-bold" id="btnSubmitWaste">
+                                        <i class="bi bi-save me-1"></i> Simpan Catatan Neraca Limbah
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visualisasi Komposisi Limbah & Pedoman Segregasi -->
+                    <div class="col-lg-7">
+                        <div class="card card-custom mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-pie-chart text-success me-2"></i>Komposisi Timbulan Limbah Konstruksi
+                                </h6>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle">ISO 14001 Waste Analysis</span>
+                            </div>
+                            <div class="card-body">
+                                <div style="position: relative; height: 260px;">
+                                    <canvas id="wasteChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-custom">
+                            <div class="card-header">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-shield-check text-primary me-2"></i>Standar Segregasi Limbah Bangunan Hijau (Greenship)
+                                </h6>
+                            </div>
+                            <div class="card-body small">
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <div class="p-2 border rounded bg-danger-subtle">
+                                            <strong class="text-danger d-block"><i class="bi bi-radioactive me-1"></i>Kuning - Limbah B3</strong>
+                                            <span>Oli bekas, kaleng cat/solvent, kain majun terkontaminasi bahan kimia.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-2 border rounded bg-primary-subtle">
+                                            <strong class="text-primary d-block"><i class="bi bi-recycle me-1"></i>Biru - Daur Ulang</strong>
+                                            <span>Sisa besi beton tulangan, pipa PVC, kardus packaging, kayu bekisting.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-2 border rounded bg-secondary-subtle">
+                                            <strong class="text-secondary d-block"><i class="bi bi-bricks me-1"></i>Abu - Puing Demolisi</strong>
+                                            <span>Pecahan beton, sisa bata ringan, semen beku untuk material urugan.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-2 border rounded bg-success-subtle">
+                                            <strong class="text-success d-block"><i class="bi bi-tree me-1"></i>Hijau - Organik</strong>
+                                            <span>Sisa vegetasi pembersihan lahan dan sampah domestik kantin pekerja.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabel Neraca Pengelolaan Limbah Konstruksi -->
+                <div class="card card-custom mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-bold text-dark">
+                            <i class="bi bi-journal-text text-success me-2"></i>Log Neraca &amp; Manifest Pengelolaan Limbah Proyek
+                        </h6>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="loadWasteData()">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="tableWaste">
+                                <thead>
+                                    <tr>
+                                        <th>Bukti/Manifest</th>
+                                        <th>Tanggal</th>
+                                        <th>Nama Material Limbah</th>
+                                        <th>Kategori</th>
+                                        <th>Volume</th>
+                                        <th>Metode (3R)</th>
+                                        <th>Vendor / Pengolah</th>
+                                        <th>Status TPS</th>
+                                        <th class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyWaste">
+                                    <!-- Rendered via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- --------------------------------------------------------------------------
+                 MODUL 7: 🚜 JADWAL KEDATANGAN MATERIAL & ALAT BERAT (JUST-IN-TIME LOGISTICS)
+                 -------------------------------------------------------------------------- -->
+            <div class="tab-pane fade" id="tab-logistics" role="tabpanel">
+                <!-- Alert Banner Mode Hanya Lihat (RBAC) -->
+                <div id="alertRbacLogistics" class="alert alert-secondary border-0 shadow-sm d-flex align-items-center justify-content-between mb-3 py-2 px-3 d-none">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-eye-fill text-secondary fs-5"></i>
+                        <div>
+                            <strong class="d-block small text-dark mb-0">Mode Hanya Lihat (Read-Only)</strong>
+                            <span class="text-muted" style="font-size:0.75rem;">Anda masuk sebagai <span class="fw-semibold rbac-user-name">Pengguna</span> (<span class="rbac-user-role">Pekerja</span>). Hak catat armada & update status logistik dibatasi untuk Koordinator Alat Berat & Logistik.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAuth" onclick="AuthManager && AuthManager.openSwitchTab && AuthManager.openSwitchTab()">
+                        <i class="bi bi-arrow-left-right me-1"></i> Ganti Akun
+                    </button>
+                </div>
+                <!-- KPI Logistik & Alat Berat -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3">
+                        <div class="card p-3 border-0 shadow-sm rounded-3 bg-white border-start border-4 border-primary">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Kedatangan Hari Ini</div>
+                                    <h4 class="fw-bold text-primary mb-0" id="kpiLogisticsToday">0 Batch</h4>
+                                </div>
+                                <div class="kpi-icon-box bg-primary-subtle text-primary">
+                                    <i class="bi bi-clock-history"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card p-3 border-0 shadow-sm rounded-3 bg-white border-start border-4 border-success">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Material Tiba (QC Pass)</div>
+                                    <h4 class="fw-bold text-success mb-0" id="kpiMaterialArrived">0 Kiriman</h4>
+                                </div>
+                                <div class="kpi-icon-box bg-success-subtle text-success">
+                                    <i class="bi bi-check-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card p-3 border-0 shadow-sm rounded-3 bg-white border-start border-4 border-warning">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Alat Berat Beroperasi</div>
+                                    <h4 class="fw-bold text-warning mb-0" id="kpiEquipmentActive">0 Unit</h4>
+                                </div>
+                                <div class="kpi-icon-box bg-warning-subtle text-warning">
+                                    <i class="bi bi-gear-wide-connected"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card p-3 border-0 shadow-sm rounded-3 bg-white border-start border-4 border-danger">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Pengiriman Tertunda (Delay)</div>
+                                    <h4 class="fw-bold text-danger mb-0" id="kpiLogisticsDelayed">0 Kasus</h4>
+                                </div>
+                                <div class="kpi-icon-box bg-danger-subtle text-danger">
+                                    <i class="bi bi-exclamation-octagon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bagian 1: Jadwal Kedatangan Material Ramah Lingkungan (Just-In-Time) -->
+                <div class="card card-custom mb-4">
+                    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-truck text-primary me-2"></i>Jadwal Kedatangan Material (Just-In-Time Delivery)</h5>
+                            <span class="text-muted small">Pencegahan penumpukan material berlebih di lapangan guna menjaga kualitas dan menurunkan jejak karbon logistik.</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#modalAddMaterialDelivery">
+                            <i class="bi bi-plus-circle me-1"></i> Jadwalkan Kedatangan Material
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="tableMaterialDeliveries">
+                                <thead>
+                                    <tr>
+                                        <th>Bukti Surat Jalan</th>
+                                        <th>Material</th>
+                                        <th>Jumlah / Volume</th>
+                                        <th>Supplier / Vendor</th>
+                                        <th>Estimasi Tiba</th>
+                                        <th>Titik Drop / Gudang</th>
+                                        <th>Status Pengiriman</th>
+                                        <th class="text-center">Aksi &amp; QC</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyMaterialDeliveries">
+                                    <!-- Rendered via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bagian 2: Mobilisasi & Jadwal Alat Berat (Heavy Equipment) -->
+                <div class="card card-custom">
+                    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-cone-striped text-warning me-2"></i>Mobilisasi &amp; Jadwal Alat Berat (Heavy Equipment)</h5>
+                            <span class="text-muted small">Monitoring masa sewa, nomor izin layak alat (SIA/SILO), operator, dan status mobilisasi/demobilisasi alat konstruksi.</span>
+                        </div>
+                        <button class="btn btn-warning btn-sm px-3 text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalAddEquipment">
+                            <i class="bi bi-plus-circle me-1"></i> Registrasi Alat Berat
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="tableHeavyEquipment">
+                                <thead>
+                                    <tr>
+                                        <th>Unit &amp; Kode Alat</th>
+                                        <th>Jenis Alat</th>
+                                        <th>Operator &amp; Vendor</th>
+                                        <th>Mobilisasi (Masuk)</th>
+                                        <th>Demobilisasi (Keluar)</th>
+                                        <th>Status Kelaikan (SIA/SILO)</th>
+                                        <th>Status Operasional</th>
+                                        <th class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyHeavyEquipment">
+                                    <!-- Rendered via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ==============================================================================
+         MODAL DIALOGS
+         ============================================================================== -->
+
+    <!-- Modal: Tambah/Edit Material -->
+    <div class="modal fade" id="modalAddMaterial" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalMaterialTitle">Tambah Material Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formMaterial">
+                    <div class="modal-body">
+                        <input type="hidden" id="matId">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Nama Material</label>
+                            <input type="text" class="form-control" id="matNama" placeholder="Contoh: Semen Ramah Lingkungan PCC" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Satuan</label>
+                            <input type="text" class="form-control" id="matSatuan" placeholder="Contoh: Sak, Batang, M3, Kg" required>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Stok Masuk</label>
+                                <input type="number" step="0.01" class="form-control" id="matMasuk" placeholder="0" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Stok Keluar</label>
+                                <input type="number" step="0.01" class="form-control" id="matKeluar" placeholder="0" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Batas Minimum Stok (Reorder Point)</label>
+                            <input type="number" step="0.01" class="form-control" id="matMin" placeholder="0" required>
+                            <div class="form-text small">Jika sisa stok &le; nilai ini, sistem akan memicu status PERLU REORDER.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success fw-bold" id="btnSaveMaterial">Simpan Material</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Tambah WBS Manual -->
+    <div class="modal fade" id="modalAddWbs" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Tambah Item WBS Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formAddWbs">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Nama Pekerjaan</label>
+                            <input type="text" class="form-control" id="wbsNama" placeholder="Contoh: Pekerjaan Pengecoran Kolom Lantai 3" required>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Tanggal Mulai</label>
+                                <input type="date" class="form-control" id="wbsStart" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Tanggal Selesai</label>
+                                <input type="date" class="form-control" id="wbsEnd" required>
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <label class="form-label small fw-bold">Bobot (%)</label>
+                                <input type="number" step="0.01" class="form-control" id="wbsBobot" placeholder="10.0" required>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small fw-bold">Rencana (%)</label>
+                                <input type="number" step="0.01" class="form-control" id="wbsPlan" value="100.00" required>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small fw-bold">Realisasi (%)</label>
+                                <input type="number" step="0.01" class="form-control" id="wbsActual" value="0.00" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary fw-bold">Simpan WBS &amp; Update Kurva S</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Input & Update Progres Realisasi WBS -->
+    <div class="modal fade" id="modalUpdateProgress" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-speedometer2 me-2"></i>Input Progres Realisasi Lapangan
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formUpdateProgress">
+                    <div class="modal-body">
+                        <input type="hidden" id="progWbsId">
+                        
+                        <div class="mb-3">
+                            <span class="badge bg-success-subtle text-success border border-success-subtle mb-1">Item Pekerjaan WBS</span>
+                            <h6 class="fw-bold text-dark mb-1" id="progWbsNama">Nama Pekerjaan</h6>
+                            <div class="text-muted small d-flex gap-2 align-items-center">
+                                <span><i class="bi bi-calendar3 me-1"></i><span id="progWbsDates">2026-11-01 s/d 2026-11-14</span></span>
+                                <span>&bull;</span>
+                                <span>Bobot: <strong id="progWbsBobot">0.00%</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="card p-3 bg-light border-0 mb-3 rounded-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="small text-secondary fw-semibold">Target Progres Rencana:</span>
+                                <span class="fw-bold text-primary" id="progWbsPlan">100.00%</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-secondary fw-semibold">Status Fisik Saat Ini:</span>
+                                <span id="progWbsCurrentStatusBadge" class="badge bg-secondary">Sedang Berjalan</span>
+                            </div>
+                        </div>
+
+                        <!-- Kontrol Input Progres Realisasi -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label fw-bold mb-0 text-dark">Progres Realisasi Lapangan (%)</label>
+                                <span class="fs-4 fw-bold text-success" id="progValDisplay">0.00%</span>
+                            </div>
+                            <input type="range" class="form-range" id="progRangeSlider" min="0" max="100" step="0.5" value="0">
+                            <div class="input-group">
+                                <input type="number" step="0.01" min="0" max="100" class="form-control form-control-lg fw-bold text-center text-success" id="progInputNumber" value="0" required>
+                                <span class="input-group-text fw-bold">%</span>
+                            </div>
+                        </div>
+
+                        <!-- Quick Action Buttons -->
+                        <div class="d-flex gap-1 mb-3 flex-wrap justify-content-center">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setQuickProgress(25)">25%</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setQuickProgress(50)">50%</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setQuickProgress(75)">75%</button>
+                            <button type="button" class="btn btn-outline-success btn-sm fw-bold" onclick="setQuickProgress(100)">100% Selesai</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="adjustQuickProgress(5)">+5%</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="adjustQuickProgress(10)">+10%</button>
+                        </div>
+
+                        <!-- Live Calculation Deviasi Preview -->
+                        <div class="p-2 rounded border mb-3" id="progDeviationBox">
+                            <div class="d-flex justify-content-between align-items-center small">
+                                <span>Deviasi Terhadap Target Rencana:</span>
+                                <span class="fw-bold" id="progDeviasiText">0.00%</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label small fw-bold">Catatan Verifikasi Lapangan (Opsional)</label>
+                            <textarea class="form-control form-control-sm" id="progNotes" rows="2" placeholder="Contoh: Pengecoran pile cap selesai 100%, bekisting dibongkar."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success fw-bold px-4" id="btnSaveProgress">
+                            <i class="bi bi-check-circle me-1"></i> Simpan &amp; Kalkulasi Ulang Kurva S
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Universal Photo Viewer -->
+    <div class="modal fade" id="modalImageViewer" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title fw-bold" id="modalImageTitle">Bukti Foto Lampiran</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-2 bg-light">
+                    <img src="" id="modalImageSrc" class="img-fluid rounded shadow-sm" style="max-height: 70vh;" alt="Lampiran Foto">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Jadwalkan Kedatangan Material (JIT) -->
+    <div class="modal fade" id="modalAddMaterialDelivery" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-truck me-2"></i>Jadwal Kedatangan Material Baru</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formMaterialDelivery">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Pilih Material</label>
+                            <input type="text" class="form-control" id="delivNama" placeholder="Contoh: Semen PCC Rendah Karbon" required>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Volume / Jumlah</label>
+                                <input type="number" step="0.01" class="form-control" id="delivVolume" placeholder="500" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Satuan</label>
+                                <input type="text" class="form-control" id="delivSatuan" placeholder="Sak / Batang / M3" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Supplier / Vendor Pengirim</label>
+                            <input type="text" class="form-control" id="delivVendor" placeholder="PT. Semen Nusantara Eco" required>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Tanggal Tiba</label>
+                                <input type="date" class="form-control" id="delivTanggal" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Estimasi Jam</label>
+                                <input type="time" class="form-control" id="delivJam" value="09:00" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Titik Drop Lapangan / Gudang</label>
+                            <input type="text" class="form-control" id="delivTitikDrop" placeholder="Gudang Transit Sisi Utara / Zona Drop 2" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Status Pengiriman</label>
+                            <select class="form-select" id="delivStatus" required>
+                                <option value="Dijadwalkan">Dijadwalkan</option>
+                                <option value="Dalam Perjalanan">Dalam Perjalanan (En-Route)</option>
+                                <option value="Tiba &amp; Lolos QC">Tiba &amp; Lolos QC (Masuk Stok)</option>
+                                <option value="Tertunda">Tertunda (Delayed)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Foto Surat Jalan / Delivery Order (DO)</label>
+                            <input type="file" class="form-control" id="delivSuratJalan" accept="image/*,.pdf">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary fw-bold" id="btnSaveDelivery">Simpan Jadwal Material</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Registrasi Alat Berat -->
+    <div class="modal fade" id="modalAddEquipment" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-gear-wide-connected me-2"></i>Registrasi Mobilisasi Alat Berat</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formHeavyEquipment">
+                    <div class="modal-body">
+                        <div class="row g-2 mb-3">
+                            <div class="col-7">
+                                <label class="form-label small fw-bold">Nama / Model Alat</label>
+                                <input type="text" class="form-control" id="equipNama" placeholder="Contoh: Tower Crane Liebherr 280 EC-H" required>
+                            </div>
+                            <div class="col-5">
+                                <label class="form-label small fw-bold">Kode / Plat Unit</label>
+                                <input type="text" class="form-control" id="equipKode" placeholder="TC-01 / B 9123 XZ" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Kategori Alat Berat</label>
+                            <select class="form-select" id="equipKategori" required>
+                                <option value="Tower Crane">Tower Crane</option>
+                                <option value="Excavator &amp; Backhoe">Excavator &amp; Backhoe</option>
+                                <option value="Mobile Crane">Mobile Crane</option>
+                                <option value="Concrete Pump">Concrete Pump</option>
+                                <option value="Bored Pile Rig">Bored Pile Rig</option>
+                                <option value="Roller / Compactor">Roller / Compactor</option>
+                                <option value="Dump Truck / Mixer">Dump Truck / Readymix Truck</option>
+                            </select>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Nama Operator</label>
+                                <input type="text" class="form-control" id="equipOperator" placeholder="Joko Susilo (SIO Aktif)" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Vendor / Pemilik Alat</label>
+                                <input type="text" class="form-control" id="equipVendor" placeholder="PT. Alat Konstruksi Prima" required>
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Tanggal Mobilisasi (Masuk)</label>
+                                <input type="date" class="form-control" id="equipTglMasuk" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Tanggal Demobilisasi (Keluar)</label>
+                                <input type="date" class="form-control" id="equipTglKeluar" required>
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Status Kelaikan SIA/SILO</label>
+                                <select class="form-select" id="equipSIA" required>
+                                    <option value="SIA Aktif &amp; Terverifikasi">SIA Aktif &amp; Terverifikasi</option>
+                                    <option value="Proses Uji Riksa">Proses Uji Riksa K3</option>
+                                    <option value="Masa Berlaku Habis">Masa Berlaku Habis</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Status Operasional</label>
+                                <select class="form-select" id="equipStatus" required>
+                                    <option value="Beroperasi di Proyek">Beroperasi di Proyek</option>
+                                    <option value="Dijadwalkan Mobilisasi">Dijadwalkan Mobilisasi</option>
+                                    <option value="Maintenance / Rusak">Maintenance / Rusak</option>
+                                    <option value="Selesai Demobilisasi">Selesai Demobilisasi</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-warning fw-bold text-dark" id="btnSaveEquipment">Simpan Data Alat Berat</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================================================
+         MODAL AUTENTIKASI: SIGN IN, SWITCH PEKERJA & BUAT AKUN BARU
+         ============================================================================== -->
+    <div class="modal fade" id="modalAuth" tabindex="-1" aria-labelledby="modalAuthLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white p-3 border-0" style="background-color: #0f172a !important;">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fs-4 text-primary"><i class="bi bi-shield-lock-fill"></i></span>
+                        <div>
+                            <h6 class="modal-title fw-bold text-white mb-0" id="modalAuthLabel">Sistem Autentikasi &amp; Hak Akses Pekerja</h6>
+                            <small class="text-white-50" style="font-size: 0.72rem;">Setiap fitur hanya dapat diedit oleh pekerja bersangkutan, pekerja lain hanya dapat melihat.</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" id="btnCloseAuthModal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Nav Tabs Auth: Masuk, Daftar, Akun Demo Cepat -->
+                    <ul class="nav nav-pills nav-fill mb-4 p-1 bg-light rounded-3 border" id="authTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active py-2" id="tab-login-btn" data-bs-toggle="pill" data-bs-target="#tab-login-pane" type="button" role="tab">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Masuk (Email &amp; Password)
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link py-2" id="tab-quick-btn" data-bs-toggle="pill" data-bs-target="#tab-quick-pane" type="button" role="tab">
+                                <i class="bi bi-people-fill me-1"></i> Pilih Pekerja (1-Klik)
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link py-2" id="tab-register-btn" data-bs-toggle="pill" data-bs-target="#tab-register-pane" type="button" role="tab">
+                                <i class="bi bi-person-plus-fill me-1"></i> Daftar Pekerja Baru
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="authTabsContent">
+                        <!-- PANE 1: FORM SIGN IN DENGAN EMAIL & PASSWORD -->
+                        <div class="tab-pane fade show active" id="tab-login-pane" role="tabpanel">
+                            <form id="formSignIn">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Alamat Email Pekerja <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
+                                        <input type="email" class="form-control" id="loginEmail" placeholder="nama@proyek.com" required autocomplete="username">
+                                    </div>
+                                    <div class="form-text small" style="font-size:0.75rem;">Contoh email terdaftar: <code>admin@proyek.com</code>, <code>qc@proyek.com</code>, <code>material@proyek.com</code>, <code>mandor@proyek.com</code></div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label class="form-label small fw-bold mb-0">Password <span class="text-danger">*</span></label>
+                                        <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-muted" style="font-size: 0.75rem;" onclick="togglePasswordVisibility('loginPassword', this)">
+                                            <i class="bi bi-eye"></i> Lihat Password
+                                        </button>
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
+                                        <input type="password" class="form-control" id="loginPassword" placeholder="Masukkan password Anda" required autocomplete="current-password">
+                                    </div>
+                                    <div class="form-text small" style="font-size:0.75rem;">Password default seluruh akun pekerja bawaan: <code>password123</code></div>
+                                </div>
+                                <div class="alert alert-danger d-none py-2 px-3 small" id="loginAlert"></div>
+                                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" id="btnSubmitLogin">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i> Masuk Sekarang
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- PANE 2: PILIH PEKERJA 1-KLIK (ROLE SWITCHER DEMO) -->
+                        <div class="tab-pane fade" id="tab-quick-pane" role="tabpanel">
+                            <div class="alert alert-info border-info-subtle py-2 px-3 small mb-3">
+                                <i class="bi bi-info-circle-fill me-1"></i>
+                                <strong>Uji Pembatasan Hak Akses:</strong> Klik salah satu profil pekerja di bawah untuk masuk seketika. Modul yang bukan wewenang pekerja tersebut akan otomatis terkunci ke <b>Mode Hanya Lihat (Read-Only)</b>.
+                            </div>
+                            <div class="row g-2" id="quickWorkersGrid">
+                                <!-- Populated dynamically by AuthManager -->
+                            </div>
+                        </div>
+
+                        <!-- PANE 3: FORM REGISTRASI PEKERJA BARU -->
+                        <div class="tab-pane fade" id="tab-register-pane" role="tabpanel">
+                            <form id="formRegister">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Nama Lengkap Pekerja <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control form-control-sm" id="regNama" placeholder="Contoh: Ir. Dwi Kurniawan" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Alamat Email <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control form-control-sm" id="regEmail" placeholder="dwi@proyek.com" required>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Peran &amp; Wewenang Fitur <span class="text-danger">*</span></label>
+                                    <select class="form-select form-select-sm" id="regRole" required>
+                                        <option value="">-- Pilih Wewenang Akses --</option>
+                                        <option value="admin">👑 Project Manager / Admin (Akses Penuh Seluruh Modul)</option>
+                                        <option value="material">📦 Petugas Gudang &amp; Material (Edit Kontrol Material)</option>
+                                        <option value="planner">📊 Site Engineer / Planner (Edit Jadwal &amp; Kurva S)</option>
+                                        <option value="mandor">👷 Mandor Utama / Supervisor (Edit Kebutuhan Pekerja)</option>
+                                        <option value="qc">🔍 Quality Control Engineer (Edit Inspeksi QC Mutu)</option>
+                                        <option value="risk">🛡️ HSE &amp; Risk Manager (Edit Analisis Risiko)</option>
+                                        <option value="waste">♻️ Petugas Lingkungan &amp; Limbah (Edit Manajemen Limbah)</option>
+                                        <option value="logistics">🚜 Koordinator Alat Berat &amp; Armada (Edit Logistik &amp; Alat)</option>
+                                        <option value="viewer">👤 Pekerja Lapangan / Viewer (Hanya Dapat Melihat Seluruh Modul)</option>
+                                    </select>
+                                    <div class="form-text small" style="font-size: 0.72rem;">Pekerja hanya berhak mengedit fitur yang bersangkutan, fitur lainnya hanya dapat dilihat.</div>
+                                </div>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Password <span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control form-control-sm" id="regPassword" placeholder="Minimal 6 karakter" required minlength="6">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Konfirmasi Password <span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control form-control-sm" id="regPasswordConfirm" placeholder="Ulangi password" required minlength="6">
+                                    </div>
+                                </div>
+                                <div class="alert alert-danger d-none py-2 px-3 small" id="regAlert"></div>
+                                <button type="submit" class="btn btn-success w-100 py-2 fw-semibold" id="btnSubmitRegister">
+                                    <i class="bi bi-person-check me-1"></i> Daftarkan Akun Pekerja
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================================================
+         MODAL PANDUAN IMPORT FILE MS PROJECT (.MPP) & EXCEL
+         ============================================================================== -->
+    <div class="modal fade" id="modalMppGuide" tabindex="-1" aria-labelledby="modalMppGuideLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white p-3 border-0" style="background-color: #0f172a !important;">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fs-4 text-warning"><i class="bi bi-file-earmark-easel-fill"></i></span>
+                        <div>
+                            <h6 class="modal-title fw-bold text-white mb-0" id="modalMppGuideLabel">Panduan Import File Jadwal MS Project (.MPP) &amp; Excel</h6>
+                            <small class="text-white-50" style="font-size: 0.72rem;">Cara tercepat mengunggah jadwal proyek ke sistem PENMROYEK</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-info border-info-subtle d-flex align-items-start gap-2 mb-4">
+                        <i class="bi bi-info-circle-fill fs-5 text-primary flex-shrink-0 mt-1"></i>
+                        <div class="small">
+                            Sistem <strong>PENMROYEK</strong> mendukung penuh file <strong>.XML (Format Standar MS Project)</strong>, <strong>.XLSX (Microsoft Excel)</strong>, dan <strong>.CSV</strong>. Untuk file biner <strong>.MPP</strong>, sistem akan mengekstrak nama pekerjaan secara otomatis atau Anda dapat menyimpannya ke format XML / Excel dalam 2 klik di Microsoft Project untuk hasil 100% presisi.
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <!-- Metode 1: Simpan sebagai XML di MS Project -->
+                        <div class="col-md-6">
+                            <div class="card h-100 border border-primary-subtle shadow-sm">
+                                <div class="card-header bg-primary-subtle py-2">
+                                    <span class="fw-bold text-primary small"><i class="bi bi-1-circle-fill me-1"></i>Metode 1: Simpan sebagai XML di MS Project</span>
+                                </div>
+                                <div class="card-body small">
+                                    <ol class="ps-3 mb-2 text-secondary" style="line-height: 1.6;">
+                                        <li>Buka file proyek Anda di <strong>Microsoft Project</strong>.</li>
+                                        <li>Klik menu <strong>File</strong> &rarr; <strong>Save As</strong> (Simpan Sebagai).</li>
+                                        <li>Pada pilihan <em>Save as type</em>, pilih: <br><strong class="text-dark">XML Format (*.xml)</strong>.</li>
+                                        <li>Klik <strong>Save</strong>, lalu upload file <code>.xml</code> tersebut ke PENMROYEK.</li>
+                                    </ol>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                        <i class="bi bi-check-all me-1"></i>100% Akurat dengan Tanggal &amp; Durasi Asli
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Metode 2: Menggunakan Excel atau CSV -->
+                        <div class="col-md-6">
+                            <div class="card h-100 border border-success-subtle shadow-sm">
+                                <div class="card-header bg-success-subtle py-2">
+                                    <span class="fw-bold text-success small"><i class="bi bi-2-circle-fill me-1"></i>Metode 2: Menggunakan Excel (.xlsx / .csv)</span>
+                                </div>
+                                <div class="card-body small">
+                                    <p class="text-secondary mb-2" style="line-height: 1.6;">
+                                        Anda juga dapat membuat jadwal di <strong>Microsoft Excel</strong> dengan format kolom:
+                                    </p>
+                                    <table class="table table-bordered table-sm text-center mb-2" style="font-size: 0.72rem;">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Nama Pekerjaan</th>
+                                                <th>Mulai</th>
+                                                <th>Selesai</th>
+                                                <th>Progres (%)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-start">Galian Tanah</td>
+                                                <td>2026-12-01</td>
+                                                <td>2026-12-15</td>
+                                                <td>100</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="btn btn-outline-success btn-sm w-100 mt-1 fw-semibold" onclick="downloadCsvTemplate()">
+                                        <i class="bi bi-download me-1"></i>Download Template Excel / CSV
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div> <!-- Akhir appMainView: Dashboard Proyek -->
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+        <div id="liveToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">
+                    Pemberitahuan berhasil!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Application Logic Vanilla JS -->
+    <script src="app.js"></script>
+</body>
+</html>

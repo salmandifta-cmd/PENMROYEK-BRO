@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Project xmlns="http://schemas.microsoft.com/project">
+    <SaveVersion>14</SaveVersion>
+    <Name>Proyek Pembangunan Gedung Pusat Riset Green Building 8 Lantai</Name>
+    <Company>PT Green Engineering Nusantara</Company>
+    <StartDate>2026-11-01T08:00:00</StartDate>
+    <FinishDate>2027-02-28T17:00:00</FinishDate>
+    <Tasks>
+        <Task>
+            <UID>1</UID>
+            <ID>1</ID>
+            <Name>Pekerjaan Persiapan &amp; Manajemen Limbah Demolisi B3</Name>
+            <Start>2026-11-01T08:00:00</Start>
+            <Finish>2026-11-14T17:00:00</Finish>
+            <Duration>PT96H0M0S</Duration>
+            <PercentComplete>100</PercentComplete>
+        </Task>
+        <Task>
+            <UID>2</UID>
+            <ID>2</ID>
+            <Name>Pondasi Bore Pile &amp; Green Concrete Rendah Karbon</Name>
+            <Start>2026-11-10T08:00:00</Start>
+            <Finish>2026-12-05T17:00:00</Finish>
+            <Duration>PT180H0M0S</Duration>
+            <PercentComplete>95</PercentComplete>
+        </Task>
+        <Task>
+            <UID>3</UID>
+            <ID>3</ID>
+            <Name>Struktur Kolom &amp; Balok Baja Daur Ulang Bertingkat</Name>
+            <Start>2026-11-25T08:00:00</Start>
+            <Finish>2026-12-30T17:00:00</Finish>
+            <Duration>PT240H0M0S</Duration>
+            <PercentComplete>50</PercentComplete>
+        </Task>
+        <Task>
+            <UID>4</UID>
+            <ID>4</ID>
+            <Name>Dinding Bata Ringan Ramah Lingkungan &amp; Insulasi Termal</Name>
+            <Start>2026-12-15T08:00:00</Start>
+            <Finish>2027-01-20T17:00:00</Finish>
+            <Duration>PT250H0M0S</Duration>
+            <PercentComplete>15</PercentComplete>
+        </Task>
+        <Task>
+            <UID>5</UID>
+            <ID>5</ID>
+            <Name>Instalasi MEP, Rainwater Harvesting &amp; Solar Rooftop</Name>
+            <Start>2027-01-05T08:00:00</Start>
+            <Finish>2027-02-15T17:00:00</Finish>
+            <Duration>PT280H0M0S</Duration>
+            <PercentComplete>0</PercentComplete>
+        </Task>
+        <Task>
+            <UID>6</UID>
+            <ID>6</ID>
+            <Name>Pekerjaan Finishing Green Building &amp; Sertifikasi Greenship</Name>
+            <Start>2027-02-01T08:00:00</Start>
+            <Finish>2027-02-28T17:00:00</Finish>
+            <Duration>PT192H0M0S</Duration>
+            <PercentComplete>0</PercentComplete>
+        </Task>
+    </Tasks>
+</Project>
